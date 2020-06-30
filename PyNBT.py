@@ -125,8 +125,7 @@ class PyNBT:
         else:
             print("First parameter must be a filename")
             return False
-            bname = os.path.basename(filename)
-            bname = bname[:-len(".dat")]
+            bname = os.path.splitext(os.path.basename(filename))[0]
             if bname == level:
                 version = self.readLInt(fp.read(4))
                 lenght = self.readLInt(fp.read(4))
