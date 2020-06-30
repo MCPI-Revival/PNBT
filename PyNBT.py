@@ -1,6 +1,6 @@
 import os
 
-class NBT:
+class PyNBT:
     root = []
     TAG_END = 0
     TAG_BYTE = 1
@@ -14,6 +14,111 @@ class NBT:
     TAG_LIST = 9
     TAG_COMPOUND = 10
     
+    def checkLength(string, expect):
+        length = len(string)
+        assert (length == expect), 'Expected ' + str(expect) + 'bytes, got ' + str(length)
+        
+    def readTriad(str: bytes) -> int:
+        PyNBT.checkLength(str, 3)
+        return unpack('>L', b'\x00' + str)[0]
+
+    def writeTriad(value: int) -> bytes:
+        return pack('>L', value)[1:]
+
+    def readLTriad(str: bytes) -> int:
+        PyNBT.checkLength(str, 3)
+        return unpack('<L', b'\x00' + str)[0]
+
+    def writeLTriad(value: int) -> bytes:
+        return pack('<L', value)[0:-1]
+    
+    def readBool(b: bytes) -> int:
+        return unpack('?', b)[0]
+
+    def writeBool(b: int) -> bytes:
+        return b'\x01' if b else b'\x00'
+  
+    def readByte(c: bytes) -> int:
+        PyNBT.checkLength(c, 1)
+        return unpack('>B', c)[0]
+    
+    def readSignedByte(c: bytes) -> int:
+        PyNBT.checkLength(c, 1)
+        return unpack('>b', c)[0]
+
+    def writeByte(c: int) -> bytes:
+        return pack(">B", c)
+    
+    def readShort(str: bytes) -> int:
+        PyNBT.checkLength(str, 2)
+        return unpack('>H', str)[0]
+
+    def writeShort(value: int) -> bytes:
+        return pack('>H', value)
+    
+    def readLShort(str: bytes) -> int:
+        PyNBT.checkLength(str, 2)
+        return unpack('<H', str)[0]
+
+    def writeLShort(value: int) -> bytes:
+        return pack('<H', value)
+    
+    def readInt(str: bytes) -> int:
+        PyNBT.checkLength(str, 4)
+        return unpack('>L', str)[0]
+
+    def writeInt(value: int) -> bytes:
+        return pack('>L', value)
+
+    def readLInt(str: bytes) -> int:
+        PyNBT.checkLength(str, 4)
+        return unpack('<L', str)[0]
+
+    def writeLInt(value: int) -> bytes:
+        return pack('<L', value)
+
+    def readFloat(str: bytes) -> int:
+        PyNBT.checkLength(str, 4)
+        return unpack('>f', str)[0]
+
+    def writeFloat(value: int) -> bytes:
+        return pack('>f', value)
+
+    def readLFloat(str: bytes) -> int:
+        PyNBT.checkLength(str, 4)
+        return unpack('<f', str)[0]
+
+    def writeLFloat(value: int) -> bytes:
+        return pack('<f', value)
+
+    def readDouble(str: bytes) -> int:
+        PyNBT.checkLength(str, 8)
+        return unpack('>d', str)[0]
+
+    def writeDouble(value: int) -> bytes:
+        return pack('>d', value)
+
+    def readLDouble(str: bytes) -> int:
+        PyNBT.checkLength(str, 8)
+        return unpack('<d', str)[0]
+
+    def writeLDouble(value: int) -> bytes:
+        return pack('<d', value)
+
+    def readLong(str: bytes) -> int:
+        PyNBT.checkLength(str, 8)
+        return unpack('>L', str)[0]
+
+    def writeLong(value: int) -> bytes:
+        return pack('>L', value)
+
+    def readLLong(str: bytes) -> int:
+        PyNBT.checkLength(str, 8)
+        return unpack('<L', str)[0]
+
+    def writeLLong(value: int) -> bytes:
+        return pack('<L', value)
+    
     def loadFile(self, filename):
         if os.path.isfile(filename)
             fp = open('filename')
@@ -23,37 +128,37 @@ class NBT:
             bname = os.path.basename(filename)
             bname = bname[:-len(".dat")]
             if bname == level:
-                version = Binary.readLInt(fp.read(4))
-                lenght = Binary.readLInt(fp.read(4))
+                version = self.readLInt(fp.read(4))
+                lenght = self.readLInt(fp.read(4))
             elif(bname == entities):
                 fp.read(12)
-            self.traverseTag(fp, self.root)
+            self.traverseTag(self, fp, self.root)
             return self.root[-1]
             
     def traverseTag(self, fp, tree):
-        tagType = self.readType(fp, self.TAG_BYTE)
+        tagType = self.readType(self, fp, self.TAG_BYTE)
         if tagType == self.TAG_END:
             return False
         else:
-            tagName = self.readType(fp, self.TAG_STRING)
-            tagData = self.readType(fp, tagType)
+            tagName = self.readType(self, fp, self.TAG_STRING)
+            tagData = self.readType(self, fp, tagType)
             tree = []
             tree.append({'type': tagType, 'name': tagName, 'value': tagData})
             return True
         
-    def readType(fp, tagType):
+    def readType(self, fp, tagType):
         if tagType == self.TAG_BYTE:
-            return Binary.readByte(fp.read(1))
+            return self.readByte(fp.read(1))
         elif tagType == self.TAG_SHORT:
-            return Binary.readLShort(fp.read(2))
+            return self.readLShort(fp.read(2))
         elif tagType == self.TAG_INT:
-            return Binary.readLInt(fp.read(4))
+            return self.readLInt(fp.read(4))
         elif tagType == self.TAG_LONG:
-            return Binary.readLLong(fp.read(8))
+            return self.readLLong(fp.read(8))
         elif tagType == self.TAG_FLOAT:
-            return Binary.readLFloat(fp.read(4))
+            return self.readLFloat(fp.read(4))
         elif tagType == self.TAG_DOUBLE:
-            return Binary.readLDouble(fp.read(8))
+            return self.readLDouble(fp.read(8))
         elif tagType == self.TAG_BYTE_ARRAY:
             arrayLength = self.readType(fp, self.TAG_INT)
             arr = []
