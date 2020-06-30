@@ -1,4 +1,5 @@
 import os
+from struct import unpack, pack, calcsize
 
 class PyNBT:
     root = []
