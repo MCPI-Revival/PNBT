@@ -160,29 +160,29 @@ class PyNBT:
         elif tagType == self.TAG_DOUBLE:
             return self.readLDouble(fp.read(8))
         elif tagType == self.TAG_BYTE_ARRAY:
-            arrayLength = self.readType(fp, self.TAG_INT)
+            arrayLength = self.readType(self, fp, self.TAG_INT)
             arr = []
             i = 0
             while i < arrayLength:
                 i += 1
-                arr = self.readType(fp, self.TAG_BYTE)
+                arr = self.readType(self, fp, self.TAG_BYTE)
                 return arr
         elif tagType == self.TAG_STRING:
-            stringLength = self.readType(fp, self.TAG_SHORT)
+            stringLength = self.readType(self, fp, self.TAG_SHORT)
             if not stringLength:
                 return ""
             string = fp.read(stringLength)
             return string
         elif tagType == self.TAG_LIST:
-            tagID = self.readType(fp, self.TAG_BYTE)
-            listLength = self.readType(fp, self.TAG_INT)
+            tagID = self.readType(self, fp, self.TAG_BYTE)
+            listLength = self.readType(self, fp, self.TAG_INT)
             list = {'type': tagID, 'value': []}
             i = 0
             while i < listLength:
                 i += 1
-                list["value"].append(self.readType(fp, tagID))
+                list["value"].append(self.readType(self, fp, tagID))
             return list
         elif tagType == self.TAG_COMPOUND:
             tree = []
-            while traverseTag(fp, tree): pass
+            while traverseTag(self, fp, tree): pass
             return tree
