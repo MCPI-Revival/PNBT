@@ -14,6 +14,8 @@ class PyNBT:
     TAG_STRING = 8
     TAG_LIST = 9
     TAG_COMPOUND = 10
+    TAG_INT_ARRAY = 11
+    TAG_LONG_ARRAY = 12
     
     def checkLength(string, expect):
         length = len(string)
