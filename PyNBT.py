@@ -188,3 +188,7 @@ class PyNBT:
             tree = []
             while traverseTag(self, fp, tree): pass
             return tree
+        elif tagType == self.TAG_INT_ARRAY:
+            pass
+        elif tagType == self.TAG_LONG_ARRAY:
+            pass
