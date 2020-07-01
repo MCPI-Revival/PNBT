@@ -121,7 +121,7 @@ class PyNBT:
         return pack('<L', value)
     
     def loadFile(self, filename):
-        if os.path.isfile(filename)
+        if os.path.isfile(filename):
             fp = open('filename')
         else:
             print("First parameter must be a filename")
