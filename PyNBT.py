@@ -128,14 +128,14 @@ class PyNBT:
         else:
             print("First parameter must be a filename")
             return False
-            bname = os.path.splitext(os.path.basename(filename))[0]
-            if bname == level:
-                version = PyNBT.readLInt(fp.read(4))
-                lenght = PyNBT.readLInt(fp.read(4))
-            elif(bname == entities):
-                fp.read(12)
-            PyNBT.traverseTag(fp, PyNBT.root)
-            return PyNBT.root[-1]
+        bname = os.path.splitext(os.path.basename(filename))[0]
+        if bname == 'level':
+            version = PyNBT.readLInt(fp.read(4))
+            lenght = PyNBT.readLInt(fp.read(4))
+        elif(bname == 'entities'):
+            fp.read(12)
+        PyNBT.traverseTag(fp, PyNBT.root)
+        return PyNBT.root[-1]
             
     def traverseTag(fp, tree):
         tagType = PyNBT.readType(fp, PyNBT.TAG_BYTE)
