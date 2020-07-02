@@ -135,7 +135,7 @@ class PyNBT:
         elif(bname == 'entities'):
             fp.read(12)
         PyNBT.traverseTag(fp, PyNBT.root)
-        return PyNBT.root[-1]
+        return next(reversed(PyNBT.root), None)
             
     def traverseTag(fp, tree):
         tagType = PyNBT.readType(fp, PyNBT.TAG_BYTE)
