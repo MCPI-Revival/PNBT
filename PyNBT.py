@@ -2,7 +2,7 @@ import os
 from struct import unpack, pack, calcsize
 
 class PyNBT:
-    root = []
+    root = {}
     TAG_END = 0
     TAG_BYTE = 1
     TAG_SHORT = 2
@@ -135,17 +135,16 @@ class PyNBT:
         elif(bname == 'entities'):
             fp.read(12)
         PyNBT.traverseTag(fp, PyNBT.root)
-        return next(reversed(PyNBT.root), None)
+        return PyNBT.root
             
-    def traverseTag(fp, tree):
+    def traverseTag(fp, tree: dict):
         tagType = PyNBT.readType(fp, PyNBT.TAG_BYTE)
         if tagType == PyNBT.TAG_END:
             return False
         else:
             tagName = PyNBT.readType(fp, PyNBT.TAG_STRING)
             tagData = PyNBT.readType(fp, tagType)
-            tree = []
-            tree.append({'type': tagType, 'name': tagName, 'value': tagData})
+            tree.update({'type': tagType, 'name': tagName, 'value': tagData})
             return True
         
     def readType(fp, tagType):
@@ -166,8 +165,8 @@ class PyNBT:
             arr = []
             i = 0
             while i < arrayLength:
+                arr.append(PyNBT.readType(fp, PyNBT.TAG_BYTE))
                 i += 1
-                arr = PyNBT.readType(fp, PyNBT.TAG_BYTE)
                 return arr
         elif tagType == PyNBT.TAG_STRING:
             stringLength = PyNBT.readType(fp, PyNBT.TAG_SHORT)
@@ -181,11 +180,11 @@ class PyNBT:
             list = {'type': tagID, 'value': []}
             i = 0
             while i < listLength:
+                list["value"] = PyNBT.readType(fp, tagID)
                 i += 1
-                list["value"].append(PyNBT.readType(fp, tagID))
             return list
         elif tagType == PyNBT.TAG_COMPOUND:
-            tree = []
+            tree = {}
             while traverseTag(fp, tree): pass
             return tree
         elif tagType == PyNBT.TAG_INT_ARRAY:
