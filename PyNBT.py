@@ -130,8 +130,8 @@ class PyNBT:
             return False
         bname = os.path.splitext(os.path.basename(filename))[0]
         if bname == 'level':
-            version = PyNBT.readLInt(fp.read(4))
-            lenght = PyNBT.readLInt(fp.read(4))
+            version = PyNBT.readLInt(fp.read(4).encode())
+            lenght = PyNBT.readLInt(fp.read(4).encode())
         elif(bname == 'entities'):
             fp.read(12)
         PyNBT.traverseTag(fp, PyNBT.root)
@@ -150,17 +150,17 @@ class PyNBT:
         
     def readType(fp, tagType):
         if tagType == PyNBT.TAG_BYTE:
-            return PyNBT.readByte(fp.read(1))
+            return PyNBT.readByte(fp.read(1).encode())
         elif tagType == PyNBT.TAG_SHORT:
-            return PyNBT.readLShort(fp.read(2))
+            return PyNBT.readLShort(fp.read(2).encode())
         elif tagType == PyNBT.TAG_INT:
-            return PyNBT.readLInt(fp.read(4))
+            return PyNBT.readLInt(fp.read(4).encode())
         elif tagType == PyNBT.TAG_LONG:
-            return PyNBT.readLLong(fp.read(8))
+            return PyNBT.readLLong(fp.read(8).encode())
         elif tagType == PyNBT.TAG_FLOAT:
-            return PyNBT.readLFloat(fp.read(4))
+            return PyNBT.readLFloat(fp.read(4).encode())
         elif tagType == PyNBT.TAG_DOUBLE:
-            return PyNBT.readLDouble(fp.read(8))
+            return PyNBT.readLDouble(fp.read(8).encode())
         elif tagType == PyNBT.TAG_BYTE_ARRAY:
             arrayLength = PyNBT.readType(fp, PyNBT.TAG_INT)
             arr = []
