@@ -110,17 +110,17 @@ class PyNBT:
 
     def readLong(str: bytes) -> int:
         PyNBT.checkLength(str, 8)
-        return unpack('>L', str)[0]
+        return unpack('>Q', str)[0]
 
     def writeLong(value: int) -> bytes:
-        return pack('>L', value)
+        return pack('>Q', value)
 
     def readLLong(str: bytes) -> int:
         PyNBT.checkLength(str, 8)
-        return unpack('<L', str)[0]
+        return unpack('<Q', str)[0]
 
     def writeLLong(value: int) -> bytes:
-        return pack('<L', value)
+        return pack('<Q', value)
     
     def loadFile(filename):
         if os.path.isfile(filename):
@@ -185,7 +185,7 @@ class PyNBT:
             return list
         elif tagType == PyNBT.TAG_COMPOUND:
             tree = {}
-            while traverseTag(fp, tree): pass
+            while PyNBT.traverseTag(fp, tree): pass
             return tree
         elif tagType == PyNBT.TAG_INT_ARRAY:
             arrayLength = PyNBT.readType(fp, PyNBT.TAG_INT)
