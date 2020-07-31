@@ -17,111 +17,142 @@ class PyNBT:
     TAG_INT_ARRAY = 11
     TAG_LONG_ARRAY = 12
     
+    @staticmethod
     def checkLength(string, expect):
         length = len(string)
         assert (length == expect), 'Expected ' + str(expect) + 'bytes, got ' + str(length)
-        
+     
+    @staticmethod
     def readTriad(str: bytes) -> int:
         PyNBT.checkLength(str, 3)
         return unpack('>L', b'\x00' + str)[0]
 
+    @staticmethod
     def writeTriad(value: int) -> bytes:
         return pack('>L', value)[1:]
 
+    @staticmethod
     def readLTriad(str: bytes) -> int:
         PyNBT.checkLength(str, 3)
         return unpack('<L', b'\x00' + str)[0]
 
+    @staticmethod
     def writeLTriad(value: int) -> bytes:
         return pack('<L', value)[0:-1]
     
+    @staticmethod
     def readBool(b: bytes) -> int:
         return unpack('?', b)[0]
 
+    @staticmethod
     def writeBool(b: int) -> bytes:
         return b'\x01' if b else b'\x00'
   
+    @staticmethod
     def readByte(c: bytes) -> int:
         PyNBT.checkLength(c, 1)
         return unpack('>B', c)[0]
     
+    @staticmethod
     def readSignedByte(c: bytes) -> int:
         PyNBT.checkLength(c, 1)
         return unpack('>b', c)[0]
 
+    @staticmethod
     def writeByte(c: int) -> bytes:
         return pack(">B", c)
     
+    @staticmethod
     def readShort(str: bytes) -> int:
         PyNBT.checkLength(str, 2)
         return unpack('>H', str)[0]
 
+    @staticmethod
     def writeShort(value: int) -> bytes:
         return pack('>H', value)
     
+    @staticmethod
     def readLShort(str: bytes) -> int:
         PyNBT.checkLength(str, 2)
         return unpack('<H', str)[0]
 
+    @staticmethod
     def writeLShort(value: int) -> bytes:
         return pack('<H', value)
     
+    @staticmethod
     def readInt(str: bytes) -> int:
         PyNBT.checkLength(str, 4)
         return unpack('>L', str)[0]
 
+    @staticmethod
     def writeInt(value: int) -> bytes:
         return pack('>L', value)
 
+    @staticmethod
     def readLInt(str: bytes) -> int:
         PyNBT.checkLength(str, 4)
         return unpack('<L', str)[0]
 
+    @staticmethod
     def writeLInt(value: int) -> bytes:
         return pack('<L', value)
 
+    @staticmethod
     def readFloat(str: bytes) -> int:
         PyNBT.checkLength(str, 4)
         return unpack('>f', str)[0]
 
+    @staticmethod
     def writeFloat(value: int) -> bytes:
         return pack('>f', value)
 
+    @staticmethod
     def readLFloat(str: bytes) -> int:
         PyNBT.checkLength(str, 4)
         return unpack('<f', str)[0]
 
+    @staticmethod
     def writeLFloat(value: int) -> bytes:
         return pack('<f', value)
 
+    @staticmethod
     def readDouble(str: bytes) -> int:
         PyNBT.checkLength(str, 8)
         return unpack('>d', str)[0]
 
+    @staticmethod
     def writeDouble(value: int) -> bytes:
         return pack('>d', value)
 
+    @staticmethod
     def readLDouble(str: bytes) -> int:
         PyNBT.checkLength(str, 8)
         return unpack('<d', str)[0]
 
+    @staticmethod
     def writeLDouble(value: int) -> bytes:
         return pack('<d', value)
 
+    @staticmethod
     def readLong(str: bytes) -> int:
         PyNBT.checkLength(str, 8)
         return unpack('>Q', str)[0]
 
+    @staticmethod
     def writeLong(value: int) -> bytes:
         return pack('>Q', value)
 
+    @staticmethod
     def readLLong(str: bytes) -> int:
         PyNBT.checkLength(str, 8)
         return unpack('<Q', str)[0]
 
+    @staticmethod
     def writeLLong(value: int) -> bytes:
         return pack('<Q', value)
     
+    @staticmethod
     def loadFile(filename):
         if os.path.isfile(filename):
             fp = open(filename, "rb")
@@ -136,7 +167,8 @@ class PyNBT:
             fp.read(12)
         PyNBT.traverseTag(fp, PyNBT.root)
         return PyNBT.root
-            
+   
+    @staticmethod
     def traverseTag(fp, tree: dict):
         tagType = PyNBT.readType(fp, PyNBT.TAG_BYTE)
         if tagType == PyNBT.TAG_END:
@@ -146,7 +178,8 @@ class PyNBT:
             tagData = PyNBT.readType(fp, tagType)
             tree.update({'type': tagType, 'name': tagName, 'value': tagData})
             return True
-        
+     
+    @staticmethod
     def readType(fp, tagType):
         if tagType == PyNBT.TAG_BYTE:
             return PyNBT.readByte(fp.read(1))
