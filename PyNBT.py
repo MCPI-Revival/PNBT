@@ -188,6 +188,18 @@ class PyNBT:
             while traverseTag(fp, tree): pass
             return tree
         elif tagType == PyNBT.TAG_INT_ARRAY:
-            pass
+            arrayLength = PyNBT.readType(fp, PyNBT.TAG_INT)
+            arr = []
+            i = 0
+            while i < arrayLength:
+                arr.append(PyNBT.readType(fp, PyNBT.TAG_INT))
+                i += 1
+                return arr
         elif tagType == PyNBT.TAG_LONG_ARRAY:
-            pass
+            arrayLength = PyNBT.readType(fp, PyNBT.TAG_INT)
+            arr = []
+            i = 0
+            while i < arrayLength:
+                arr.append(PyNBT.readType(fp, PyNBT.TAG_LONG))
+                i += 1
+                return arr
