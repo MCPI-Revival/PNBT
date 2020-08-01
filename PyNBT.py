@@ -171,9 +171,7 @@ class PyNBT:
     @staticmethod
     def traverseTag(fp, tree: dict):
         tagType = PyNBT.readType(fp, PyNBT.TAG_BYTE)
-        if tagType == PyNBT.TAG_END:
-            return False
-        else:
+        if not tagType == PyNBT.TAG_END:
             tagName = PyNBT.readType(fp, PyNBT.TAG_STRING)
             tagData = PyNBT.readType(fp, tagType)
             tree.update({'type': tagType, 'name': tagName, 'value': tagData})
