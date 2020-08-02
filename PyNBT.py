@@ -131,7 +131,7 @@ class PyNBT:
     @staticmethod
     def readInt(data: bytes) -> int:
         PyNBT.checkLength(data, 4)
-        return unpack('>L', data)[0]
+        return PyNBT.signInt(unpack('>L', data)[0])
 
     @staticmethod
     def writeInt(value: int) -> bytes:
@@ -140,7 +140,7 @@ class PyNBT:
     @staticmethod
     def readLInt(data: bytes) -> int:
         PyNBT.checkLength(data, 4)
-        return unpack('<L', data)[0]
+        return PyNBT.signInt(unpack('<L', data)[0])
 
     @staticmethod
     def writeLInt(value: int) -> bytes:
