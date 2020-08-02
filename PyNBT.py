@@ -270,12 +270,12 @@ class PyNBT:
         elif tagType == PyNBT.TAG_LIST:
             tagID = PyNBT.readType(fp, PyNBT.TAG_BYTE)
             listLength = PyNBT.readType(fp, PyNBT.TAG_INT)
-            list = {'type': tagID, 'value': []}
+            dictlist = {'type': tagID, 'value': []}
             i = 0
             while i < listLength:
-                list["value"] = PyNBT.readType(fp, tagID)
+                dictlist["value"].append(PyNBT.readType(fp, tagID))
                 i += 1
-            return list
+            return dictlist
         elif tagType == PyNBT.TAG_COMPOUND:
             tree = {}
             while PyNBT.traverseTag(fp, tree): pass
