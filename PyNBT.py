@@ -236,6 +236,8 @@ class PyNBT:
             tagData = PyNBT.readType(fp, tagType)
             tree.update({'type': tagType, 'name': tagName, 'value': tagData})
             return True
+        else:
+            return False
      
     @staticmethod
     def readType(fp, tagType):
