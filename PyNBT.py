@@ -223,7 +223,7 @@ class PyNBT:
         if bname == 'level':
             version = PyNBT.readLInt(fp.read(4))
             lenght = PyNBT.readLInt(fp.read(4))
-        elif(bname == 'entities'):
+        elif bname == 'entities':
             fp.read(12)
         PyNBT.traverseTag(fp, PyNBT.root)
         return PyNBT.root
