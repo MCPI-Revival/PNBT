@@ -38,9 +38,9 @@ class PyNBT:
     @staticmethod
     def signByte(value: int):
         if calcsize('P') == 8:
-            return Binary.sign(value, 56)
+            return PyNBT.sign(value, 56)
         else:
-            return Binary.sign(value, 24)
+            return PyNBT.sign(value, 24)
         
     @staticmethod
     def unsignByte(value: int):
@@ -49,9 +49,9 @@ class PyNBT:
     @staticmethod
     def signShort(value: int):
         if calcsize('P') == 8:
-            return Binary.sign(value, 48)
+            return PyNBT.sign(value, 48)
         else:
-            return Binary.sign(value, 16)
+            return PyNBT.sign(value, 16)
 
     @staticmethod
     def unsignShort(value: int):
@@ -59,7 +59,7 @@ class PyNBT:
     
     @staticmethod
     def signInt(value: int):
-        return Binary.sign(value, 32)
+        return PyNBT.sign(value, 32)
 
     @staticmethod
     def unsignInt(value: int):
@@ -67,7 +67,7 @@ class PyNBT:
     
     @staticmethod
     def readTriad(data: bytes) -> int:
-        Binary.checkLength(data, 3)
+        PyNBT.checkLength(data, 3)
         return unpack('>L', b'\x00' + data)[0]
     
     @staticmethod
@@ -76,7 +76,7 @@ class PyNBT:
     
     @staticmethod
     def readLTriad(data: bytes) -> int:
-        Binary.checkLength(data, 3)
+        PyNBT.checkLength(data, 3)
         return unpack('<L', data + b'\x00')[0]
 
     @staticmethod
@@ -93,13 +93,13 @@ class PyNBT:
     
     @staticmethod
     def readByte(data: bytes) -> int:
-        Binary.checkLength(data, 1)
+        PyNBT.checkLength(data, 1)
         return ord(data)
     
     @staticmethod
     def readSignedByte(data: bytes) -> int:
-        Binary.checkLength(data, 1)
-        return Binary.signByte(Binary.readByte(data))
+        PyNBT.checkLength(data, 1)
+        return PyNBT.signByte(PyNBT.readByte(data))
 
     @staticmethod
     def writeByte(value: int) -> bytes:
@@ -107,13 +107,13 @@ class PyNBT:
     
     @staticmethod
     def readShort(data: bytes) -> int:
-        Binary.checkLength(data, 2)
+        PyNBT.checkLength(data, 2)
         return unpack('>H', data)[0]
     
     @staticmethod
     def readSignedShort(data: bytes) -> int:
-        Binary.checkLength(data, 2)
-        return Binary.signShort(Binary.readShort(data))
+        PyNBT.checkLength(data, 2)
+        return PyNBT.signShort(PyNBT.readShort(data))
 
     @staticmethod
     def writeShort(value: int) -> bytes:
@@ -121,13 +121,13 @@ class PyNBT:
     
     @staticmethod
     def readLShort(data: bytes) -> int:
-        Binary.checkLength(data, 2)
+        PyNBT.checkLength(data, 2)
         return unpack('<H', data)[0]
     
     @staticmethod
     def readSignedLShort(data: bytes) -> int:
-        Binary.checkLength(data, 2)
-        return Binary.signShort(Binary.readLShort(data))
+        PyNBT.checkLength(data, 2)
+        return PyNBT.signShort(PyNBT.readLShort(data))
 
     @staticmethod
     def writeLShort(value: int) -> bytes:
@@ -135,9 +135,9 @@ class PyNBT:
     
     @staticmethod
     def readInt(data: bytes) -> int:
-        Binary.checkLength(data, 4)
+        PyNBT.checkLength(data, 4)
         if calcsize('P') == 8:
-            value = Binary.signInt(unpack('>L', data)[0])
+            value = PyNBT.signInt(unpack('>L', data)[0])
         else:
             value = unpack('>L', data)[0]
         return value
@@ -148,9 +148,9 @@ class PyNBT:
 
     @staticmethod
     def readLInt(data: bytes) -> int:
-        Binary.checkLength(data, 4)
+        PyNBT.checkLength(data, 4)
         if calcsize('P') == 8:
-            value = Binary.signInt(unpack('<L', data)[0])
+            value = PyNBT.signInt(unpack('<L', data)[0])
         else:
             value = unpack('<L', data)[0]
         return value
@@ -161,12 +161,12 @@ class PyNBT:
     
     @staticmethod
     def readFloat(data: bytes) -> int:
-        Binary.checkLength(data, 4)
+        PyNBT.checkLength(data, 4)
         return unpack('>f', data)[0]
     
     @staticmethod
     def readRoundedFloat(data, accuracy):
-        return round(Binary.readFloat(data), accuracy)
+        return round(PyNBT.readFloat(data), accuracy)
 
     @staticmethod
     def writeFloat(value: int) -> bytes:
@@ -174,12 +174,12 @@ class PyNBT:
 
     @staticmethod
     def readLFloat(data: bytes) -> int:
-        Binary.checkLength(data, 4)
+        PyNBT.checkLength(data, 4)
         return unpack('<f', data)[0]
     
     @staticmethod
     def readRoundedLFloat(data, accuracy):
-        return round(Binary.readLFloat(data), accuracy)
+        return round(PyNBT.readLFloat(data), accuracy)
 
     @staticmethod
     def writeLFloat(value: int) -> bytes:
@@ -191,7 +191,7 @@ class PyNBT:
     
     @staticmethod
     def readDouble(data: bytes) -> int:
-        Binary.checkLength(data, 8)
+        PyNBT.checkLength(data, 8)
         return unpack('>d', data)[0]
 
     @staticmethod
@@ -200,7 +200,7 @@ class PyNBT:
 
     @staticmethod
     def readLDouble(data: bytes) -> int:
-        Binary.checkLength(data, 8)
+        PyNBT.checkLength(data, 8)
         return unpack('<d', data)[0]
 
     @staticmethod
@@ -209,7 +209,7 @@ class PyNBT:
     
     @staticmethod
     def readLong(data: bytes) -> int:
-        Binary.checkLength(data, 8)
+        PyNBT.checkLength(data, 8)
         return unpack('>Q', data)[0]
     
     @staticmethod
@@ -218,7 +218,7 @@ class PyNBT:
 
     @staticmethod
     def readLLong(data: bytes) -> int:
-        Binary.checkLength(data, 8)
+        PyNBT.checkLength(data, 8)
         return unpack('<Q', data)[0]
 
     @staticmethod
