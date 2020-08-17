@@ -16,7 +16,214 @@ class PyNBT:
     TAG_LIST = 9
     TAG_COMPOUND = 10
     TAG_INT_ARRAY = 11
-    TAG_LONG_ARRAY = 12   
+    TAG_LONG_ARRAY = 12
+    
+    BIG_ENDIAN = 0x00
+    LITTLE_ENDIAN = 0x01
+    ENDIANNESS = BIG_ENDIAN if sys.byteorder == "big" else LITTLE_ENDIAN
+    
+    @staticmethod
+    def checkLength(data: bytes, expect: int):
+        length = len(data)
+        assert (length == expect), 'Expected ' + str(expect) + 'bytes, got ' + str(length)
+        
+    @staticmethod
+    def sign(num, bitlen):
+        bits = bitlen - 1
+        x = num & (2 ** bitlen - 1)
+        a = x & (2 ** bits - 1)
+        b = x & (2 ** bits)
+        return (~(2 ** bits - 1) & (-1) | a) if b else a
+        
+    @staticmethod
+    def signByte(value: int):
+        if calcsize('P') == 8:
+            return Binary.sign(value, 56)
+        else:
+            return Binary.sign(value, 24)
+        
+    @staticmethod
+    def unsignByte(value: int):
+        return value & 0xff
+        
+    @staticmethod
+    def signShort(value: int):
+        if calcsize('P') == 8:
+            return Binary.sign(value, 48)
+        else:
+            return Binary.sign(value, 16)
+
+    @staticmethod
+    def unsignShort(value: int):
+        return value & 0xffff
+    
+    @staticmethod
+    def signInt(value: int):
+        return Binary.sign(value, 32)
+
+    @staticmethod
+    def unsignInt(value: int):
+        return value & 0xffffffff
+    
+    @staticmethod
+    def readTriad(data: bytes) -> int:
+        Binary.checkLength(data, 3)
+        return unpack('>L', b'\x00' + data)[0]
+    
+    @staticmethod
+    def writeTriad(value: int) -> bytes:
+        return pack('>L', value)[1:]
+    
+    @staticmethod
+    def readLTriad(data: bytes) -> int:
+        Binary.checkLength(data, 3)
+        return unpack('<L', data + b'\x00')[0]
+
+    @staticmethod
+    def writeLTriad(value: int) -> bytes:
+        return pack('<L', value)[0:-1]
+    
+    @staticmethod
+    def readBool(data: bytes) -> bool:
+        return unpack('?', data)[0]
+
+    @staticmethod
+    def writeBool(value: bool) -> bytes:
+        return b'\x01' if value else b'\x00'
+    
+    @staticmethod
+    def readByte(data: bytes) -> int:
+        Binary.checkLength(data, 1)
+        return ord(data)
+    
+    @staticmethod
+    def readSignedByte(data: bytes) -> int:
+        Binary.checkLength(data, 1)
+        return Binary.signByte(Binary.readByte(data))
+
+    @staticmethod
+    def writeByte(value: int) -> bytes:
+        return chr(value).encode()
+    
+    @staticmethod
+    def readShort(data: bytes) -> int:
+        Binary.checkLength(data, 2)
+        return unpack('>H', data)[0]
+    
+    @staticmethod
+    def readSignedShort(data: bytes) -> int:
+        Binary.checkLength(data, 2)
+        return Binary.signShort(Binary.readShort(data))
+
+    @staticmethod
+    def writeShort(value: int) -> bytes:
+        return pack('>H', value)
+    
+    @staticmethod
+    def readLShort(data: bytes) -> int:
+        Binary.checkLength(data, 2)
+        return unpack('<H', data)[0]
+    
+    @staticmethod
+    def readSignedLShort(data: bytes) -> int:
+        Binary.checkLength(data, 2)
+        return Binary.signShort(Binary.readLShort(data))
+
+    @staticmethod
+    def writeLShort(value: int) -> bytes:
+        return pack('<H', value)
+    
+    @staticmethod
+    def readInt(data: bytes) -> int:
+        Binary.checkLength(data, 4)
+        if calcsize('P') == 8:
+            value = Binary.signInt(unpack('>L', data)[0])
+        else:
+            value = unpack('>L', data)[0]
+        return value
+
+    @staticmethod
+    def writeInt(value: int) -> bytes:
+        return pack('>L', value)
+
+    @staticmethod
+    def readLInt(data: bytes) -> int:
+        Binary.checkLength(data, 4)
+        if calcsize('P') == 8:
+            value = Binary.signInt(unpack('<L', data)[0])
+        else:
+            value = unpack('<L', data)[0]
+        return value
+
+    @staticmethod
+    def writeLInt(value: int) -> bytes:
+        return pack('<L', value)
+    
+    @staticmethod
+    def readFloat(data: bytes) -> int:
+        Binary.checkLength(data, 4)
+        return unpack('>f', data)[0]
+    
+    @staticmethod
+    def readRoundedFloat(data, accuracy):
+        return round(Binary.readFloat(data), accuracy)
+
+    @staticmethod
+    def writeFloat(value: int) -> bytes:
+        return pack('>f', value)
+
+    @staticmethod
+    def readLFloat(data: bytes) -> int:
+        Binary.checkLength(data, 4)
+        return unpack('<f', data)[0]
+    
+    @staticmethod
+    def readRoundedLFloat(data, accuracy):
+        return round(Binary.readLFloat(data), accuracy)
+
+    @staticmethod
+    def writeLFloat(value: int) -> bytes:
+        return pack('<f', value)
+    
+    @staticmethod
+    def printFloat(value):
+        return match(r"/(\\.\\d+?)0+$/", "" + value).group(1)
+    
+    @staticmethod
+    def readDouble(data: bytes) -> int:
+        Binary.checkLength(data, 8)
+        return unpack('>d', data)[0]
+
+    @staticmethod
+    def writeDouble(value: int) -> bytes:
+        return pack('>d', value)
+
+    @staticmethod
+    def readLDouble(data: bytes) -> int:
+        Binary.checkLength(data, 8)
+        return unpack('<d', data)[0]
+
+    @staticmethod
+    def writeLDouble(value: int) -> bytes:
+        return pack('<d', value)
+    
+    @staticmethod
+    def readLong(data: bytes) -> int:
+        Binary.checkLength(data, 8)
+        return unpack('>Q', data)[0]
+    
+    @staticmethod
+    def writeLong(value: int) -> bytes:
+        return pack('>Q', value)
+
+    @staticmethod
+    def readLLong(data: bytes) -> int:
+        Binary.checkLength(data, 8)
+        return unpack('<Q', data)[0]
+
+    @staticmethod
+    def writeLLong(value: int) -> bytes:
+        return pack('<Q', value)
  
     @staticmethod
     def loadFile(filename):
