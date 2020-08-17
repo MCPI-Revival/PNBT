@@ -239,7 +239,7 @@ class PyNBT:
         elif bname == 'entities':
             fp.read(12)
         PyNBT.traverseTag(fp, PyNBT.root)
-        return PyNBT.root
+        return PyNBT.root[list(PyNBT.root.keys())[-1]]
    
     @staticmethod
     def traverseTag(fp, tree: dict):
@@ -247,7 +247,7 @@ class PyNBT:
         if not tagType == PyNBT.TAG_END:
             tagName = PyNBT.readType(fp, PyNBT.TAG_STRING)
             tagData = PyNBT.readType(fp, tagType)
-            tree.update({'type': tagType, 'name': tagName, 'value': tagData})
+            tree[tagName] = {'type': tagType, 'name': tagName, 'value': tagData}
             return True
         else:
             return False
