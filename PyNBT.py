@@ -30,6 +30,10 @@ class PyNBT:
         assert (length == expect), 'Expected ' + str(expect) + 'bytes, got ' + str(length)
         
     @staticmethod
+    def isEndianess(endianess: str):
+        assert endianess == "<" or endianess == ">", "Invalid Endianess"
+        
+    @staticmethod
     def sign(num, bitlen):
         bits = bitlen - 1
         x = num & (2 ** bitlen - 1)
