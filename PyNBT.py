@@ -66,22 +66,23 @@ class PyNBT:
         return value & 0xffffffff
     
     @staticmethod
-    def readTriad(data: bytes) -> int:
+    def readTriad(endianess: str, data: bytes) -> int:
         PyNBT.checkLength(data, 3)
-        return unpack('>L', b'\x00' + data)[0]
+        assert endianess == ("<" or ">"), "Invalid Endianess"
+        if endianess == ">":
+            newData = b'\x00' + data
+        else:
+            newData = data + b'\x00'
+        return unpack(endianess + 'L', newData)[0]
     
     @staticmethod
-    def writeTriad(value: int) -> bytes:
-        return pack('>L', value)[1:]
-    
-    @staticmethod
-    def readLTriad(data: bytes) -> int:
-        PyNBT.checkLength(data, 3)
-        return unpack('<L', data + b'\x00')[0]
-
-    @staticmethod
-    def writeLTriad(value: int) -> bytes:
-        return pack('<L', value)[0:-1]
+    def writeTriad(endianess: str, value: int) -> bytes:
+        assert endianess == ("<" or ">"), "Invalid Endianess"
+        if endianess == ">":
+            data = pack(endianess + 'L', value)[1:]
+        else:
+            data = pack(endianess + 'L', value)[0:-1]
+        return data
     
     @staticmethod
     def readBool(data: bytes) -> bool:
@@ -106,124 +107,75 @@ class PyNBT:
         return chr(value).encode()
     
     @staticmethod
-    def readShort(data: bytes) -> int:
+    def readShort(endianess: str, data: bytes) -> int:
         PyNBT.checkLength(data, 2)
-        return unpack('>H', data)[0]
+        assert endianess == ("<" or ">"), "Invalid Endianess"
+        return unpack(endianess + 'H', data)[0]
     
     @staticmethod
-    def readSignedShort(data: bytes) -> int:
+    def readSignedShort(endianess: str, data: bytes) -> int:
         PyNBT.checkLength(data, 2)
-        return PyNBT.signShort(PyNBT.readShort(data))
+        return PyNBT.signShort(PyNBT.readShort(endianess, data))
 
     @staticmethod
-    def writeShort(value: int) -> bytes:
-        return pack('>H', value)
+    def writeShort(endianess: str, value: int) -> bytes:
+        assert endianess == ("<" or ">"), "Invalid Endianess"
+        return pack(endianess + 'H', value)
     
     @staticmethod
-    def readLShort(data: bytes) -> int:
-        PyNBT.checkLength(data, 2)
-        return unpack('<H', data)[0]
-    
-    @staticmethod
-    def readSignedLShort(data: bytes) -> int:
-        PyNBT.checkLength(data, 2)
-        return PyNBT.signShort(PyNBT.readLShort(data))
-
-    @staticmethod
-    def writeLShort(value: int) -> bytes:
-        return pack('<H', value)
-    
-    @staticmethod
-    def readInt(data: bytes) -> int:
+    def readInt(endianess: str, data: bytes) -> int:
         PyNBT.checkLength(data, 4)
+        assert endianess == ("<" or ">"), "Invalid Endianess"
+        value = unpack(endianess + 'L', data)[0]
         if calcsize('P') == 8:
-            value = PyNBT.signInt(unpack('>L', data)[0])
-        else:
-            value = unpack('>L', data)[0]
+            value = PyNBT.signInt(value)
         return value
 
     @staticmethod
-    def writeInt(value: int) -> bytes:
-        return pack('>L', value)
-
-    @staticmethod
-    def readLInt(data: bytes) -> int:
-        PyNBT.checkLength(data, 4)
-        if calcsize('P') == 8:
-            value = PyNBT.signInt(unpack('<L', data)[0])
-        else:
-            value = unpack('<L', data)[0]
-        return value
-
-    @staticmethod
-    def writeLInt(value: int) -> bytes:
-        return pack('<L', value)
+    def writeInt(endianess: str, value: int) -> bytes:
+        assert endianess == ("<" or ">"), "Invalid Endianess"
+        return pack(endianess + 'L', value)
     
     @staticmethod
-    def readFloat(data: bytes) -> int:
+    def readFloat(endianess: str, data: bytes) -> int:
         PyNBT.checkLength(data, 4)
-        return unpack('>f', data)[0]
+        assert endianess == ("<" or ">"), "Invalid Endianess"
+        return unpack(endianess + 'f', data)[0]
     
     @staticmethod
-    def readRoundedFloat(data, accuracy):
-        return round(PyNBT.readFloat(data), accuracy)
+    def readRoundedFloat(endianess: str, data, accuracy):
+        return round(PyNBT.readFloat(endianess, data), accuracy)
 
     @staticmethod
-    def writeFloat(value: int) -> bytes:
-        return pack('>f', value)
-
-    @staticmethod
-    def readLFloat(data: bytes) -> int:
-        PyNBT.checkLength(data, 4)
-        return unpack('<f', data)[0]
-    
-    @staticmethod
-    def readRoundedLFloat(data, accuracy):
-        return round(PyNBT.readLFloat(data), accuracy)
-
-    @staticmethod
-    def writeLFloat(value: int) -> bytes:
-        return pack('<f', value)
+    def writeFloat(endianess: str, alue: int) -> bytes:
+        assert endianess == ("<" or ">"), "Invalid Endianess"
+        return pack(endianess + 'f', value)
     
     @staticmethod
     def printFloat(value):
         return match(r"/(\\.\\d+?)0+$/", "" + value).group(1)
     
     @staticmethod
-    def readDouble(data: bytes) -> int:
+    def readDouble(endianess: str, data: bytes) -> int:
         PyNBT.checkLength(data, 8)
-        return unpack('>d', data)[0]
+        assert endianess == ("<" or ">"), "Invalid Endianess"
+        return unpack(endianess + 'd', data)[0]
 
     @staticmethod
-    def writeDouble(value: int) -> bytes:
-        return pack('>d', value)
-
-    @staticmethod
-    def readLDouble(data: bytes) -> int:
-        PyNBT.checkLength(data, 8)
-        return unpack('<d', data)[0]
-
-    @staticmethod
-    def writeLDouble(value: int) -> bytes:
-        return pack('<d', value)
+    def writeDouble(endianess: str, value: int) -> bytes:
+        assert endianess == ("<" or ">"), "Invalid Endianess"
+        return pack(endianess + 'd', value)
     
     @staticmethod
-    def readLong(data: bytes) -> int:
+    def readLong(endianess: str, data: bytes) -> int:
         PyNBT.checkLength(data, 8)
-        return unpack('>Q', data)[0]
+        assert endianess == ("<" or ">"), "Invalid Endianess"
+        return unpack(endianess + 'Q', data)[0]
     
     @staticmethod
-    def writeLong(value: int) -> bytes:
-        return pack('>Q', value)
-
-    @staticmethod
-    def readLLong(data: bytes) -> int:
-        PyNBT.checkLength(data, 8)
-        return unpack('<Q', data)[0]
-
-    @staticmethod
-    def writeLLong(value: int) -> bytes:
-        return pack('<Q', value)
+    def writeLong(endianess: str, value: int) -> bytes:
+        assert endianess == ("<" or ">"), "Invalid Endianess"
+        return pack(endianess + 'Q', value)
  
     @staticmethod
     def loadFile(filename):
