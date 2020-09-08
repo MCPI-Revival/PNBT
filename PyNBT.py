@@ -176,9 +176,11 @@ class PyNBT:
     def writeLong(endianess: str, value: int) -> bytes:
         assert endianess == ("<" or ">"), "Invalid Endianess"
         return pack(endianess + 'Q', value)
- 
-    @staticmethod
-    def loadFile(filename):
+    
+    def __init__(self, endianess: str):
+        self.endianess = endianess
+        
+    def loadFile(self, filename: str):
         if os.path.isfile(filename):
             fp = open(filename, "rb")
         else:
@@ -186,78 +188,76 @@ class PyNBT:
             return False
         bname = os.path.splitext(os.path.basename(filename))[0]
         if bname == 'level':
-            version = PyNBT.readLInt(fp.read(4))
-            lenght = PyNBT.readLInt(fp.read(4))
+            version = self.readLInt(fp.read(4))
+            lenght = self.readLInt(fp.read(4))
         elif bname == 'entities':
             fp.read(12)
-        PyNBT.traverseTag(fp, PyNBT.root)
-        return PyNBT.root[list(PyNBT.root.keys())[-1]]
+        self.traverseTag(fp, self.root)
+        return self.root[list(self.root.keys())[-1]]
    
-    @staticmethod
-    def traverseTag(fp, tree: dict):
-        tagType = PyNBT.readType(fp, PyNBT.TAG_BYTE)
+    def traverseTag(self, fp, tree: dict):
+        tagType = self.readType(fp, self.TAG_BYTE)
         if not tagType == PyNBT.TAG_END:
-            tagName = PyNBT.readType(fp, PyNBT.TAG_STRING)
-            tagData = PyNBT.readType(fp, tagType)
+            tagName = self.readType(fp, self.TAG_STRING)
+            tagData = self.readType(fp, tagType)
             tree[tagName] = {'type': tagType, 'name': tagName, 'value': tagData}
             return True
         else:
             return False
      
-    @staticmethod
-    def readType(fp, tagType):
-        if tagType == PyNBT.TAG_BYTE:
-            return PyNBT.readByte(fp.read(1))
-        elif tagType == PyNBT.TAG_SHORT:
-            return PyNBT.readLShort(fp.read(2))
-        elif tagType == PyNBT.TAG_INT:
-            return PyNBT.readLInt(fp.read(4))
-        elif tagType == PyNBT.TAG_LONG:
-            return PyNBT.readLLong(fp.read(8))
-        elif tagType == PyNBT.TAG_FLOAT:
-            return PyNBT.readLFloat(fp.read(4))
-        elif tagType == PyNBT.TAG_DOUBLE:
-            return PyNBT.readLDouble(fp.read(8))
-        elif tagType == PyNBT.TAG_BYTE_ARRAY:
-            arrayLength = PyNBT.readType(fp, PyNBT.TAG_INT)
+    def readType(self, fp, tagType):
+        if tagType == self.TAG_BYTE:
+            return self.readByte(fp.read(1))
+        elif tagType == self.TAG_SHORT:
+            return self.readLShort(fp.read(2))
+        elif tagType == self.TAG_INT:
+            return self.readLInt(fp.read(4))
+        elif tagType == self.TAG_LONG:
+            return self.readLLong(fp.read(8))
+        elif tagType == self.TAG_FLOAT:
+            return self.readLFloat(fp.read(4))
+        elif tagType == self.TAG_DOUBLE:
+            return self.readLDouble(fp.read(8))
+        elif tagType == self.TAG_BYTE_ARRAY:
+            arrayLength = self.readType(fp, self.TAG_INT)
             arr = []
             i = 0
             while i < arrayLength:
-                arr.append(PyNBT.readType(fp, PyNBT.TAG_BYTE))
+                arr.append(self.readType(fp, self.TAG_BYTE))
                 i += 1
                 return arr
-        elif tagType == PyNBT.TAG_STRING:
-            stringLength = PyNBT.readType(fp, PyNBT.TAG_SHORT)
+        elif tagType == self.TAG_STRING:
+            stringLength = self.readType(fp, self.TAG_SHORT)
             if not stringLength:
                 return ""
             string = fp.read(stringLength)
             return string
-        elif tagType == PyNBT.TAG_LIST:
-            tagID = PyNBT.readType(fp, PyNBT.TAG_BYTE)
-            listLength = PyNBT.readType(fp, PyNBT.TAG_INT)
+        elif tagType == self.TAG_LIST:
+            tagID = self.readType(fp, self.TAG_BYTE)
+            listLength = self.readType(fp, self.TAG_INT)
             dictlist = {'type': tagID, 'value': []}
             i = 0
             while i < listLength:
-                dictlist["value"].append(PyNBT.readType(fp, tagID))
+                dictlist["value"].append(self.readType(fp, tagID))
                 i += 1
             return dictlist
-        elif tagType == PyNBT.TAG_COMPOUND:
+        elif tagType == self.TAG_COMPOUND:
             tree = {}
-            while PyNBT.traverseTag(fp, tree): pass
+            while self.traverseTag(fp, tree): pass
             return tree
-        elif tagType == PyNBT.TAG_INT_ARRAY:
-            arrayLength = PyNBT.readType(fp, PyNBT.TAG_INT)
+        elif tagType == self.TAG_INT_ARRAY:
+            arrayLength = self.readType(fp, self.TAG_INT)
             arr = []
             i = 0
             while i < arrayLength:
-                arr.append(PyNBT.readType(fp, PyNBT.TAG_INT))
+                arr.append(self.readType(fp, self.TAG_INT))
                 i += 1
                 return arr
-        elif tagType == PyNBT.TAG_LONG_ARRAY:
-            arrayLength = PyNBT.readType(fp, PyNBT.TAG_INT)
+        elif tagType == self.TAG_LONG_ARRAY:
+            arrayLength = self.readType(fp, self.TAG_INT)
             arr = []
             i = 0
             while i < arrayLength:
-                arr.append(PyNBT.readType(fp, PyNBT.TAG_LONG))
+                arr.append(self.readType(fp, self.TAG_LONG))
                 i += 1
                 return arr
