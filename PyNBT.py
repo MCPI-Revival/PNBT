@@ -74,7 +74,7 @@ class PyNBT:
     @staticmethod
     def readTriad(endianess: str, data: bytes) -> int:
         PyNBT.checkLength(data, 3)
-        assert endianess == ("<" or ">"), "Invalid Endianess"
+        PyNBT.isEndianess(endianess)
         if endianess == ">":
             newData = b'\x00' + data
         else:
@@ -83,7 +83,7 @@ class PyNBT:
     
     @staticmethod
     def writeTriad(endianess: str, value: int) -> bytes:
-        assert endianess == ("<" or ">"), "Invalid Endianess"
+        PyNBT.isEndianess(endianess)
         if endianess == ">":
             data = pack(endianess + 'L', value)[1:]
         else:
@@ -115,7 +115,7 @@ class PyNBT:
     @staticmethod
     def readShort(endianess: str, data: bytes) -> int:
         PyNBT.checkLength(data, 2)
-        assert endianess == ("<" or ">"), "Invalid Endianess"
+        PyNBT.isEndianess(endianess)
         return unpack(endianess + 'H', data)[0]
     
     @staticmethod
@@ -125,13 +125,13 @@ class PyNBT:
 
     @staticmethod
     def writeShort(endianess: str, value: int) -> bytes:
-        assert endianess == ("<" or ">"), "Invalid Endianess"
+        PyNBT.isEndianess(endianess)
         return pack(endianess + 'H', value)
     
     @staticmethod
     def readInt(endianess: str, data: bytes) -> int:
         PyNBT.checkLength(data, 4)
-        assert endianess == ("<" or ">"), "Invalid Endianess"
+        PyNBT.isEndianess(endianess)
         value = unpack(endianess + 'L', data)[0]
         if calcsize('P') == 8:
             value = PyNBT.signInt(value)
@@ -139,13 +139,13 @@ class PyNBT:
 
     @staticmethod
     def writeInt(endianess: str, value: int) -> bytes:
-        assert endianess == ("<" or ">"), "Invalid Endianess"
+        PyNBT.isEndianess(endianess)
         return pack(endianess + 'L', value)
     
     @staticmethod
     def readFloat(endianess: str, data: bytes) -> int:
         PyNBT.checkLength(data, 4)
-        assert endianess == ("<" or ">"), "Invalid Endianess"
+        PyNBT.isEndianess(endianess)
         return unpack(endianess + 'f', data)[0]
     
     @staticmethod
@@ -154,7 +154,7 @@ class PyNBT:
 
     @staticmethod
     def writeFloat(endianess: str, alue: int) -> bytes:
-        assert endianess == ("<" or ">"), "Invalid Endianess"
+        PyNBT.isEndianess(endianess)
         return pack(endianess + 'f', value)
     
     @staticmethod
@@ -164,23 +164,23 @@ class PyNBT:
     @staticmethod
     def readDouble(endianess: str, data: bytes) -> int:
         PyNBT.checkLength(data, 8)
-        assert endianess == ("<" or ">"), "Invalid Endianess"
+        PyNBT.isEndianess(endianess)
         return unpack(endianess + 'd', data)[0]
 
     @staticmethod
     def writeDouble(endianess: str, value: int) -> bytes:
-        assert endianess == ("<" or ">"), "Invalid Endianess"
+        PyNBT.isEndianess(endianess)
         return pack(endianess + 'd', value)
     
     @staticmethod
     def readLong(endianess: str, data: bytes) -> int:
         PyNBT.checkLength(data, 8)
-        assert endianess == ("<" or ">"), "Invalid Endianess"
+        PyNBT.isEndianess(endianess)
         return unpack(endianess + 'Q', data)[0]
     
     @staticmethod
     def writeLong(endianess: str, value: int) -> bytes:
-        assert endianess == ("<" or ">"), "Invalid Endianess"
+        PyNBT.isEndianess(endianess)
         return pack(endianess + 'Q', value)
     
     def __init__(self, endianess: str):
