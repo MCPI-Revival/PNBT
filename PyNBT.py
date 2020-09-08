@@ -22,6 +22,8 @@ class PyNBT:
     LITTLE_ENDIAN = 0x01
     ENDIANNESS = BIG_ENDIAN if sys.byteorder == "big" else LITTLE_ENDIAN
     
+    endianess = ""
+    
     @staticmethod
     def checkLength(data: bytes, expect: int):
         length = len(data)
