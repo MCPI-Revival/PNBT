@@ -188,8 +188,8 @@ class PyNBT:
             return False
         bname = os.path.splitext(os.path.basename(filename))[0]
         if bname == 'level':
-            version = self.readLInt(fp.read(4))
-            lenght = self.readLInt(fp.read(4))
+            version = self.readInt(self.endianess, fp.read(4))
+            lenght = self.readInt(self.endianess, fp.read(4))
         elif bname == 'entities':
             fp.read(12)
         self.traverseTag(fp, self.root)
@@ -197,7 +197,7 @@ class PyNBT:
    
     def traverseTag(self, fp, tree: dict):
         tagType = self.readType(fp, self.TAG_BYTE)
-        if not tagType == PyNBT.TAG_END:
+        if not tagType == self.TAG_END:
             tagName = self.readType(fp, self.TAG_STRING)
             tagData = self.readType(fp, tagType)
             tree[tagName] = {'type': tagType, 'name': tagName, 'value': tagData}
@@ -209,15 +209,15 @@ class PyNBT:
         if tagType == self.TAG_BYTE:
             return self.readByte(fp.read(1))
         elif tagType == self.TAG_SHORT:
-            return self.readLShort(fp.read(2))
+            return self.readShort(self.endianess, fp.read(2))
         elif tagType == self.TAG_INT:
-            return self.readLInt(fp.read(4))
+            return self.readInt(self.endianess, fp.read(4))
         elif tagType == self.TAG_LONG:
-            return self.readLLong(fp.read(8))
+            return self.readLong(self.endianess, fp.read(8))
         elif tagType == self.TAG_FLOAT:
-            return self.readLFloat(fp.read(4))
+            return self.readFloat(self.endianess, fp.read(4))
         elif tagType == self.TAG_DOUBLE:
-            return self.readLDouble(fp.read(8))
+            return self.readDouble(self.endianess, fp.read(8))
         elif tagType == self.TAG_BYTE_ARRAY:
             arrayLength = self.readType(fp, self.TAG_INT)
             arr = []
