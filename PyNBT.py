@@ -20,7 +20,7 @@ class PyNBT:
     
     BIG_ENDIAN = 0x00
     LITTLE_ENDIAN = 0x01
-    ENDIANNESS = BIG_ENDIAN if sys.byteorder == "big" else LITTLE_ENDIAN
+    DEVICE_ENDIANNESS = BIG_ENDIAN if sys.byteorder == "big" else LITTLE_ENDIAN
     
     endianess = ""
     
