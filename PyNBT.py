@@ -153,7 +153,7 @@ class PyNBT:
         return round(PyNBT.readFloat(endianess, data), accuracy)
 
     @staticmethod
-    def writeFloat(endianess: str, alue: int) -> bytes:
+    def writeFloat(endianess: str, value: int) -> bytes:
         PyNBT.isEndianess(endianess)
         return pack(endianess + 'f', value)
     
