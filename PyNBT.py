@@ -225,13 +225,11 @@ class PyNBT:
         elif tagType == self.TAG_DOUBLE:
             return self.readDouble(self.endianess, fp.read(8))
         elif tagType == self.TAG_BYTE_ARRAY:
-            arrayLength = self.readType(fp, self.TAG_INT)
-            arr = []
-            i = 0
-            while i < arrayLength:
-                arr.append(self.readType(fp, self.TAG_BYTE))
-                i += 1
-                return arr
+            byteArrayLength = self.readType(fp, self.TAG_INT)
+            byteArrayTag = []
+            for i in range(0, byteArrayLength):
+                byteArrayTag.append(self.readType(fp, self.TAG_BYTE))
+            return byteArrayTag
         elif tagType == self.TAG_STRING:
             stringLength = self.readType(fp, self.TAG_SHORT)
             if not stringLength:
@@ -239,31 +237,25 @@ class PyNBT:
             string = fp.read(stringLength)
             return string
         elif tagType == self.TAG_LIST:
-            tagID = self.readType(fp, self.TAG_BYTE)
+            listType = self.readType(fp, self.TAG_BYTE)
             listLength = self.readType(fp, self.TAG_INT)
-            dictlist = {'type': tagID, 'value': []}
-            i = 0
-            while i < listLength:
-                dictlist["value"].append(self.readType(fp, tagID))
-                i += 1
-            return dictlist
+            listTag = {'type': listType, 'value': []}
+            for i in range(0, listLength):
+                listTag["value"].append(self.readType(fp, listType))
+            return listTag
         elif tagType == self.TAG_COMPOUND:
             tree = {}
             while self.traverseTag(fp, tree): pass
             return tree
         elif tagType == self.TAG_INT_ARRAY:
-            arrayLength = self.readType(fp, self.TAG_INT)
-            arr = []
-            i = 0
-            while i < arrayLength:
-                arr.append(self.readType(fp, self.TAG_INT))
-                i += 1
-                return arr
+            intArrayLength = self.readType(fp, self.TAG_INT)
+            intArrayTag = []
+            for i in range(0, intArrayLength):
+                intArrayTag.append(self.readType(fp, self.TAG_INT))
+            return intArrayTag
         elif tagType == self.TAG_LONG_ARRAY:
-            arrayLength = self.readType(fp, self.TAG_INT)
-            arr = []
-            i = 0
-            while i < arrayLength:
-                arr.append(self.readType(fp, self.TAG_LONG))
-                i += 1
-                return arr
+            longArrayLength = self.readType(fp, self.TAG_INT)
+            longArrayTag = []
+            for i in range(0, longArrayLength):
+                longArrayTag.append(self.readType(fp, self.TAG_LONG))
+            return longArrayTag
