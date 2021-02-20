@@ -17,9 +17,17 @@ tag = {
     "long_array": 12
 }
 
-def read(data, endianess = "<"):
-    nbt = {}
+data = b""
+offset = 0
+nbt = {}
+endianess = "<"
+
+def reset():
+    data = b""
     offset = 0
+    nbt = {}
+
+def read():
     while not len(data) <= offset:
         tag_type = struct.unpack("b", data[offset:offset + 1])[0]
         offset += 1
