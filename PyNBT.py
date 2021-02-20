@@ -36,6 +36,7 @@ def read():
         tag_name_length = struct.unpack(endianess + "H", data[offset:offset + 2])[0]
         offset += 2
         tag_name = data[offset:offset + tag_name_length]
+        offset += tag_name_length
         if nbt_type == tag["byte"]:
             tag_value = struct.unpack("b", data[offset:offset + 1])[0]
             offset += 1
@@ -68,4 +69,9 @@ def read():
                 tag_value.append(struct.unpack("b", data[offset:offset + 1])[0])
                 offset += 1  
             nbt[tag_name] = {"type": tag_type, "value": tag_value}
-        return nbt
+        elif nbt_type == tag["string"]:
+            string_length = struct.unpack(endianess + "H", data[offset:offset + 2])[0]
+            offset += 2
+            tag_value = data[offset:offset + string_length]
+            offset += string_length
+            nbt[tag_name] = {"type": tag_type, "value": tag_value}
