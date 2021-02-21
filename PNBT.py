@@ -29,7 +29,7 @@ def read_stream(length):
     stream["offset"] += length
     return stream["data"][offset - length:offset]
 
-def read(nbt_type):
+def read_type(nbt_type):
     if nbt_type == tag["byte"]:
         tag_value = struct.unpack("b", read_stream(1))[0]
         nbt[tag_name] = {"type": tag_type, "value": tag_value}
