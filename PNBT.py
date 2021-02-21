@@ -31,30 +31,23 @@ def read_stream(length):
 
 def read_type(nbt_type):
     if nbt_type == tag["byte"]:
-        tag_value = struct.unpack("b", read_stream(1))[0]
-        nbt[tag_name] = {"type": tag_type, "value": tag_value}
+        return struct.unpack("b", read_stream(1))[0]
     elif nbt_type == tag["short"]:
-        tag_value = struct.unpack(endianess + "h", read_stream(2))[0]
-        nbt[tag_name] = {"type": tag_type, "value": tag_value}
+        return struct.unpack(endianess + "h", read_stream(2))[0]
     elif nbt_type == tag["int"]:
-        tag_value = struct.unpack(endianess + "l", read_stream(4))[0]
-        nbt[tag_name] = {"type": tag_type, "value": tag_value}
+        return struct.unpack(endianess + "l", read_stream(4))[0]
     elif nbt_type == tag["long"]:
-        tag_value = struct.unpack(endianess + "q", read_stream(8))[0]
-        nbt[tag_name] = {"type": tag_type, "value": tag_value}
+        return struct.unpack(endianess + "q", read_stream(8))[0]
     elif nbt_type == tag["float"]:
-        tag_value = struct.unpack(endianess + "f", read_stream(4))[0]
-        nbt[tag_name] = {"type": tag_type, "value": tag_value}
+        return struct.unpack(endianess + "f", read_stream(4))[0]
     elif nbt_type == tag["double"]:
-        tag_value = struct.unpack(endianess + "d", read_stream(8))[0]
-        nbt[tag_name] = {"type": tag_type, "value": tag_value}
+        return struct.unpack(endianess + "d", read_stream(8))[0]
     elif nbt_type == tag["byte_array"]:
         byte_count = struct.unpack(endianess + "l", read_stream(4))[0]
         tag_value = []
         for i in range(0, byte_count):
             tag_value.append(struct.unpack("b", read_stream(1))[0])
-        nbt[tag_name] = {"type": tag_type, "value": tag_value}
+        return tag_value
     elif nbt_type == tag["string"]:
         string_length = struct.unpack(endianess + "H", read_stream(2))[0]
-        tag_value = read_stream(string_length)
-        nbt[tag_name] = {"type": tag_type, "value": tag_value}
+        return read_stream(string_length)
