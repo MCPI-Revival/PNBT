@@ -49,7 +49,7 @@ def read_file(file_path):
 
 def read_compound_tag():
     tree = {}
-    while True:
+    while not len(stream["data"]) <= stream["offset"]:
         tag_type = struct.unpack("B", read_stream(1))[0]
         if tag_type == tag["end"]:
             break
