@@ -30,7 +30,7 @@ def reset_stream():
 
 def read_stream(length):
     stream["offset"] += length
-    return stream["data"][offset - length:offset]
+    return stream["data"][stream["offset"] - length:stream["offset"]]
 
 def read(data):
     reset_stream()
@@ -39,7 +39,7 @@ def read(data):
 
 def read_file(file_path):
     if os.path.isfile(file_path):
-        data = open(filename, "rb").read()
+        data = open(file_path, "rb").read()
         file_base_name = os.path.splitext(os.path.basename(file_path))[0]
         if file_base_name == "level":
             return read(data[8:])
