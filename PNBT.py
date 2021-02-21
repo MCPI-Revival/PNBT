@@ -72,3 +72,15 @@ def read_type(nbt_type):
         return tag_value
     elif nbt_type == tag["compound"]:
         return read_compound_tag()
+    elif nbt_type == tag["int_array"]:
+        int_count = struct.unpack(endianess + "l", read_stream(4))[0]
+        tag_value = []
+        for i in range(0, int_count):
+            tag_value.append(struct.unpack("L", read_stream(4))[0])
+        return tag_value
+    elif nbt_type == tag["long_array"]:
+        long_count = struct.unpack(endianess + "l", read_stream(4))[0]
+        tag_value = []
+        for i in range(0, long_count):
+            tag_value.append(struct.unpack("Q", read_stream(8))[0])
+        return tag_value
