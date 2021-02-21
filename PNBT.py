@@ -37,6 +37,16 @@ def read(data):
     stream["data"] = data
     return read_compound_tag()
 
+def read_file(file_path):
+    if os.path.isfile(file_path):
+        data = open(filename, "rb").read()
+        file_base_name = os.path.splitext(os.path.basename(file_path))[0]
+        if file_base_name == "level":
+            return read(data[8:])
+        if file_base_name == "entities":
+            return read(data[12:])
+        return read(data)
+
 def read_compound_tag():
     tree = {}
     while True:
@@ -47,7 +57,6 @@ def read_compound_tag():
         tag_value = read_type(tag_type)
         tree[tag_name] = {"type": tag_type, "value": tag_value}
     return tree
-        
 
 def read_type(nbt_type):
     if nbt_type == tag["byte"]:
