@@ -29,6 +29,18 @@ def read_stream(length):
     stream["offset"] += length
     return stream["data"][offset - length:offset]
 
+def read_compound_tag():
+    tree = {}
+    while True:
+        tag_type = struct.unpack("B", read_stream(1))[0]
+        if tag_type == tag["end"]:
+            break
+        tag_name = read_type(tag["string"])
+        tag_value = read_type(tag_type)
+        tree[tag_name] = {"type": tag_type, "value": tag_value}
+    return tree
+        
+
 def read_type(nbt_type):
     if nbt_type == tag["byte"]:
         return struct.unpack("b", read_stream(1))[0]
@@ -50,7 +62,7 @@ def read_type(nbt_type):
         return tag_value
     elif nbt_type == tag["string"]:
         string_length = struct.unpack(endianess + "H", read_stream(2))[0]
-        return read_stream(string_length)
+        return read_stream(string_length).decode()
     elif nbt_type == tag["list"]:
         list_type = struct.unpack("B", read_stream(1))[0]
         list_item_count = struct.unpack(endianess + "l", read_stream(4))[0]
@@ -58,3 +70,5 @@ def read_type(nbt_type):
         for i in range(0, list_item_count):
             tag_value.append(read_type(list_type))
         return tag_value
+    elif nbt_type == tag["compound"]:
+        return read_compound_tag()
