@@ -22,12 +22,20 @@ stream = {
     "offset": 0
 }
 
-nbt = {}
 endianess = "<"
+
+def reset_stream():
+    stream["data"] = b""
+    stream["offset"] = 0
 
 def read_stream(length):
     stream["offset"] += length
     return stream["data"][offset - length:offset]
+
+def read(data):
+    reset_stream()
+    stream["data"] = data
+    return read_compound_tag()
 
 def read_compound_tag():
     tree = {}
