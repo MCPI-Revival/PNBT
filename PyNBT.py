@@ -37,32 +37,24 @@ def read(nbt_type):
         tag_value = struct.unpack(endianess + "h", read_stream(2))[0]
         nbt[tag_name] = {"type": tag_type, "value": tag_value}
     elif nbt_type == tag["int"]:
-        tag_value = struct.unpack(endianess + "l", data[offset:offset + 4])[0]
-        offset += 4
+        tag_value = struct.unpack(endianess + "l", read_stream(4))[0]
         nbt[tag_name] = {"type": tag_type, "value": tag_value}
     elif nbt_type == tag["long"]:
-        tag_value = struct.unpack(endianess + "q", data[offset:offset + 8])[0]
-        offset += 8
+        tag_value = struct.unpack(endianess + "q", read_stream(8))[0]
         nbt[tag_name] = {"type": tag_type, "value": tag_value}
     elif nbt_type == tag["float"]:
-        tag_value = struct.unpack(endianess + "f", data[offset:offset + 4])[0]
-        offset += 4
+        tag_value = struct.unpack(endianess + "f", read_stream(4))[0]
         nbt[tag_name] = {"type": tag_type, "value": tag_value}
     elif nbt_type == tag["double"]:
-        tag_value = struct.unpack(endianess + "d", data[offset:offset + 8])[0]
-        offset += 8
+        tag_value = struct.unpack(endianess + "d", read_stream(8))[0]
         nbt[tag_name] = {"type": tag_type, "value": tag_value}
     elif nbt_type == tag["byte_array"]:
-        byte_count = struct.unpack(endianess + "l", data[offset:offset + 4])[0]
-        offset += 4
+        byte_count = struct.unpack(endianess + "l", read_stream(4))[0]
         tag_value = []
         for i in range(0, byte_count):
-            tag_value.append(struct.unpack("b", data[offset:offset + 1])[0])
-            offset += 1  
+            tag_value.append(struct.unpack("b", read_stream(1))[0])
         nbt[tag_name] = {"type": tag_type, "value": tag_value}
     elif nbt_type == tag["string"]:
-        string_length = struct.unpack(endianess + "H", data[offset:offset + 2])[0]
-        offset += 2
-        tag_value = data[offset:offset + string_length]
-        offset += string_length
+        string_length = struct.unpack(endianess + "H", read_stream(2))[0]
+        tag_value = read_stream(string_length)
         nbt[tag_name] = {"type": tag_type, "value": tag_value}
