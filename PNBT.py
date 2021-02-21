@@ -57,5 +57,4 @@ def read_type(nbt_type):
         tag_value = []
         for i in range(0, list_item_count):
             tag_value.append(read_type(list_type))
-        string_length = struct.unpack(endianess + "H", read_stream(2))[0]
-        return read_stream(string_length)
+        return tag_value
