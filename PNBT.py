@@ -117,7 +117,7 @@ def read_type(nbt_type):
         tag_value = []
         for i in range(0, list_item_count):
             tag_value.append(read_type(list_type))
-        return tag_value
+        return {"type": list_type, "value": tag_value}
     elif nbt_type == tag["compound"]:
         return read_compound_tag()
     elif nbt_type == tag["int_array"]:
